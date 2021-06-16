@@ -1,35 +1,44 @@
-import style from "./styles/main.scss";
-// Import scripts
-import script from "./scripts/main.js";
+import styles from "/src/styles/main.scss";
 
-import 'grapesjs/dist/css/grapes.min.css';
-import grapesjs from 'grapesjs';
+import OutherInit from "/src/scripts/outher.js";
+import { Quiz, resultsTexts, levels } from "/src/scripts/quiz.js";
+import Tip from "/src/scripts/tip.js";
+import Video from "/src/scripts/video.js";
+import Modals from "/src/scripts/modals.js";
+import Observer from "/src/scripts/observer.js";
+import SlidersInit from "/src/scripts/slidersInit.js";
+import FormInit from "/src/scripts/sendForm.js";
 
-import TabWrapper from "GrapeC/tabs/Wrapper.js"
+document.addEventListener("DOMContentLoaded", () => {
+  OutherInit();
+  Tip.init();
+  Video.init();
 
-const editor = grapesjs.init({
-  // Indicate where to init the editor. You can also pass an HTMLElement
-  container: '#gjs',
-  // Get the content for the canvas directly from the element
-  // As an alternative we could use: `components: '<h1>Hello World Component!</h1>'`,
-  fromElement: true,
-  // Size of the editor
-  height: '300px',
-  width: 'auto',
-  // Disable the storage manager for the moment
-  storageManager: false,
-  // Avoid any default panel
-  panels: { defaults: [] },
-  blockManager: {
-    appendTo: '#blocks',
-    blocks: [
-      {
-        id: "tab",
-        label: "Табы",
-        content: TabWrapper
-      }
-    ]
-  }
+  Quiz.init("#email-form-3", {
+    resultsTexts,
+    levels
+  });
+
+  let modals = Modals.init({
+    closeSelector: ".closure_link"
+  });
+
+  Observer.init([
+    Modals.onMutation || (() => {}),
+    Tip.onMutation || (() => {}),
+    Video.onMutation || (() => {}),
+    Quiz.onMutation || (() => {}),
+    Quiz.onMutation || (() => {}),
+  ]);
+
+  SlidersInit();
+  FormInit();
+
+  let exitModalDontOpened = true;
+  document.addEventListener("mouseout", e => {
+    if (exitModalDontOpened && !e.relatedTarget) {
+      exitModalDontOpened = false;
+      modals.openModal("exit")
+    }
+  })
 });
-
-console.log(TabWrapper)
