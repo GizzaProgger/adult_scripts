@@ -61,8 +61,3 @@ typings/
 .next
 
 package-lock.json
-# exclude everything
-/*
-
-# exception to the rule
-!dist/* 
